@@ -1,5 +1,5 @@
 import React from "react";
-import FacebookLogin from "react-login-facebook";
+import FacebookLogin from 'react-facebook-login';
 
 export default function Login() {
 	const responseFacebook = (res) => {
@@ -71,8 +71,9 @@ export default function Login() {
 							</div>
 							<div className='d-flex flex-column gap-4'>
 								<FacebookLogin
-									appId='543210587574795'
+									appId='501696308071436'
 									callback={responseFacebook}
+                  fields="name,email,picture"
 									render={(renderProps) => (
 										<button
                       onClick={renderProps.onClick}
