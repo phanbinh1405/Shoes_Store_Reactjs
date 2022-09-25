@@ -8,7 +8,7 @@ export default function HomeTemplate() {
 	return (
 		<Fragment>
 			<Header />
-			<div className='container h-100'>
+			<div className='container min-vh-50'>
 				<Outlet />
 			</div>
 			<Footer />

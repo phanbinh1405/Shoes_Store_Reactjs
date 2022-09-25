@@ -57,7 +57,7 @@ export const {
 
 const DOMAIN = 'https://shop.cyberlearn.vn/api'
 
-const axiosTimeout = axios.create({
+export const axiosTimeout = axios.create({
   baseURL: DOMAIN,
   timeout: 30000
 })
@@ -66,10 +66,10 @@ const axiosTimeout = axios.create({
 
 axiosTimeout.interceptors.request.use(
   (config) => {
-    const token = getStore(ACCESS_TOKEN);
+    // const token = getStore(ACCESS_TOKEN);
     config.headers = {
       ...config.headers,
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCAzMCIsIkhldEhhblN0cmluZyI6IjE3LzAyLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY3NjU5MjAwMDAwMCIsIm5iZiI6MTY0ODIyNzYwMCwiZXhwIjoxNjc2NzM5NjAwfQ.aK-3RvHXQyu6H2-FFiafeSKR4UMCcRmnuDbTT-XIcUU`,
     };
 
     return config;
