@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { axiosTimeout } from "../../utils/tools";
 
 const initialState = {
@@ -54,3 +55,20 @@ export const getProductDetailApi = (productId, setLoading) => {
 		}
 	};
 };
+
+export const likeProductApi = createAsyncThunk(
+	"product/like",
+	async (payload, thunkApi) => {
+		const {values, cb} = payload
+
+		try {
+			await axiosTimeout.get(`/Users/like?productId=${values}`)
+			toast('Đã thêm vào yêu thích', {type: 'success'})
+
+		} catch (error) {
+			console.log(error.response)
+			toast('Like thất bại!', {type: 'error'})
+		}
+		
+	}
+);
