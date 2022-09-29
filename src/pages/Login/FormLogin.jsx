@@ -51,7 +51,7 @@ function FormLogin() {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className='form-outline mb-4'>
-				<label className='form-label' htmlFor='form1Example13'>
+				<label className='form-label' >
 					Email address
 				</label>
 				<input
@@ -65,7 +65,7 @@ function FormLogin() {
 				{errors.email && <span className='text-danger'>{errors.email}</span>}
 			</div>
 			<div className='form-outline mb-4'>
-				<label className='form-label' htmlFor='form1Example23'>
+				<label className='form-label' >
 					Password
 				</label>
 				<div className='position-relative'>
@@ -105,7 +105,7 @@ function FormLogin() {
 						defaultChecked
 					/>
 
-					<label className='form-check-label' htmlFor='form1Example3'>
+					<label className='form-check-label' >
 						Remember me
 					</label>
 				</div>

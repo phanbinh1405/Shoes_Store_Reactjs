@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { ACCESS_TOKEN, axiosTimeout, setStoreJson } from "../../utils/tools";
 
 const initialState = {
@@ -11,6 +12,8 @@ const initialState = {
 		loading: false,
 		error: "",
 	},
+	myProfile: {},
+	orderHistory: [],
 };
 
 const accountReducer = createSlice({
@@ -27,6 +30,20 @@ const accountReducer = createSlice({
 			state.myAccount.accessToken = data.payload.accessToken;
 		},
 		signInFailure: (state, data) => {
+			state.signIn.loading = false;
+			state.signIn.error = data.payload.error;
+		},
+		fetchProfileRequest: (state) => {
+			state.signIn.loading = true;
+			state.signIn.error = "";
+		},
+		fetchProfileSuccess: (state, data) => {
+			state.signIn.loading = false;
+			state.signIn.error = "";
+			state.myProfile = data.payload.myProfile;
+			state.orderHistory = data.payload.orderHistory;
+		},
+		fetchProfileFailure: (state, data) => {
 			state.signIn.loading = false;
 			state.signIn.error = data.payload.error;
 		},
@@ -59,25 +76,85 @@ export const signIn = createAsyncThunk(
 	async (payload, thunkAPI) => {
 		const { values, cb } = payload;
 		const { email, password } = values;
-		thunkAPI.dispatch(signInRequest());
+		try {
+			thunkAPI.dispatch(signInRequest());
 
-		const data = await axiosTimeout.post("/Users/signin", {
-			email,
-			password,
-		});
+			const data = await axiosTimeout.post("/Users/signin", {
+				email,
+				password,
+			});
 
-		const { accessToken } = data.data.content;
+			const { accessToken } = data.data.content;
 
-		setStoreJson(ACCESS_TOKEN, accessToken);
+			setStoreJson(ACCESS_TOKEN, accessToken);
 
-		thunkAPI.dispatch(signInSuccess({ accessToken }));
-		cb(true);
+			thunkAPI.dispatch(signInSuccess({ accessToken }));
+			cb(true);
+		} catch (err) {
+			console.log(err);
+		}
 	}
 );
 
+export const fetchProfileAction = createAsyncThunk(
+	"account/get-profile",
+	async (payload, thunkAPI) => {
+		try {
+			thunkAPI.dispatch(signInRequest());
 
+			const data = await axiosTimeout.post("/Users/getProfile");
+			const result = data.data.content;
 
-export const { signInRequest, signInSuccess, signInFailure } =
-	accountReducer.actions;
+			const myProfile = {
+				email: result?.email,
+				name: result?.name,
+				password: null,
+				gender: result?.gender,
+				phone: result?.phone,
+				facebookId: result?.facebookId,
+				deleted: result?.deleted,
+				avatar: result?.avatar,
+			};
+
+			const orderHistory = result?.orderHistory;
+
+			thunkAPI.dispatch(fetchProfileSuccess({ myProfile, orderHistory }));
+
+		} catch (err) {
+			console.log(err);
+		}
+	}
+);
+
+export const updateProfileAction = createAsyncThunk(
+	"account/update-profile",
+	async (payload, thunkAPI) => {
+		const { values, cb } = payload;
+		const { email, name, password, phone, gender } = values;
+		try {
+			const result = await axiosTimeout.post("/Users/updateProfile", {
+				email,
+				name,
+				password,
+				phone,
+				gender,
+			});
+
+			if(result.data.statusCode === 200){
+				thunkAPI.dispatch(fetchProfileAction())
+				cb(true)
+			}
+		} catch (error) {
+			toast(error.response.data.content, { type: "error" });
+		}
+	}
+);
+
+export const {
+	signInRequest,
+	signInSuccess,
+	signInFailure,
+	fetchProfileSuccess,
+} = accountReducer.actions;
 
 export default accountReducer.reducer;

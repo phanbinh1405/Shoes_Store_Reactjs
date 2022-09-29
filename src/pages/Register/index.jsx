@@ -3,10 +3,12 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
+import { registerApi } from "../../redux/reducers/userReducer";
+import { useNavigate } from "react-router-dom";
 
 export default function Register(props) { 
   let dispatch = useDispatch()
-  
+  const navigate = useNavigate()
   const frm = useFormik({
     initialValues: {
       email: "",
@@ -42,7 +44,7 @@ export default function Register(props) {
     }),
     onSubmit: (values) => {
       console.log(values);
-      dispatch(registeApi(values));
+      dispatch(registerApi(values, navigate));
     },
   });
 

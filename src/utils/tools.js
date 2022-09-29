@@ -40,6 +40,9 @@ export const config = {
     }
     return null;
   },
+  clearStore: (name) => {
+    localStorage.clear(name);
+  },
 
   ACCESS_TOKEN: "accessToken",
   USER_LOGIN: "userLogin",
@@ -51,6 +54,7 @@ export const {
   getStore,
   setStoreJson,
   getStoreJson,
+  clearStore,
   USER_LOGIN,
   ACCESS_TOKEN,
 } = config;
@@ -77,5 +81,27 @@ axiosTimeout.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
+  }
+);
+
+axiosTimeout.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (err) => {
+    // const originalRequest = err.config;
+    if (err.response.status === 400 || err.response.status === 404) {
+      // history.push("/register");
+      return Promise.reject(err);
+    }
+    // console.log(err.response);
+    if (
+      err.response.status === 0 ||
+      err.response.status === 401 ||
+      err.response.status === 403
+    ) {
+      clearStore(ACCESS_TOKEN);
+      return Promise.reject(err);
+    }
   }
 );

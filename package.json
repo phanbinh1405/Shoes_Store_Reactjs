@@ -19,7 +19,8 @@
     "react-toastify": "^9.0.8",
     "sass": "^1.55.0",
     "swiper": "^8.4.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "set HTTPS=true&& set PORT=3000 && react-scripts start",

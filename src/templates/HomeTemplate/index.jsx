@@ -11,7 +11,7 @@ export default function HomeTemplate() {
 			<Header />
 			<div className='container min-vh-50'>
 				<Outlet />
-				<ToastContainer />
+				<ToastContainer  autoClose={1500}/>
 
 			</div>
 			<Footer />
