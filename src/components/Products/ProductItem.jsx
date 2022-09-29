@@ -1,10 +1,33 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
+import Modal from "../Modal";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { likeProductApi } from "../../redux/reducers/productReducer";
+function ProductItem({ product, accessToken, setShowModal }) {
+	const dispatch = useDispatch();
 
-function ProductItem({ product }) {
+	const handleLikeProduct = (id) => {
+		
+		if (accessToken) {
+			dispatch(likeProductApi({
+				values: id,
+				cb: (success) => {
+					if(success) {
+						toast("Đã like sản phẩm!", {type: 'success'})
+					}
+				}
+			}))
+		} else {
+			setShowModal(true);
+		}
+	};
+
+
 	return (
 		<div className='col-12 col-sm-6 col-lg-4 d-flex justify-content-center'>
-			<div className='card d-flex align-items-center flex-column'>
+			<div className='card d-flex align-items-center flex-column position-relative'>
 				<NavLink
 					to={`/productDetail/${product.id}`}
 					relative='path'
@@ -23,6 +46,20 @@ function ProductItem({ product }) {
 					<p className='m-0 text-center card-price' style={{ width: "50%" }}>
 						{product.price}
 					</p>
+				</div>
+				<div
+					className='position-absolute'
+					style={{
+						top: 20,
+						right: 20,
+						fontSize: 20,
+						cursor: "pointer",
+						color: "#ef0023",
+					}}
+					onClick={()=> handleLikeProduct(product.id)}
+				>
+					<i className='fa-regular fa-heart'></i>
+
 				</div>
 			</div>
 		</div>

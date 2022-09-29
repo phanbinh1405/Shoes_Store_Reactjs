@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { ACCESS_TOKEN, getStoreJson } from "../../utils/tools";
+import Modal from "../Modal";
 import ProductItem from "./ProductItem";
 
 function Products({arrProduct, isDetail}) {
+	const [showModal, setShowModal] = useState(false);
+  const accessToken = getStoreJson(ACCESS_TOKEN)
+
 	return (
 		<section className='product'>
 			<div className='container-xl'>
@@ -9,11 +15,12 @@ function Products({arrProduct, isDetail}) {
 				<div className='product__content'>
 					<div className='row' id='product__container'>
             {arrProduct?.map((product)=> {
-              return <ProductItem key={product.id} product={product}/>
+              return <ProductItem key={product.id} product={product} accessToken={accessToken} setShowModal={setShowModal}/>
             })}
           </div>
 				</div>
 			</div>
+      <Modal showModal={showModal} setShowModal={setShowModal}/>
 		</section>
 	);
 }

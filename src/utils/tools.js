@@ -40,6 +40,9 @@ export const config = {
     }
     return null;
   },
+  clearStore: (name) => {
+    localStorage.clear(name);
+  },
 
   ACCESS_TOKEN: "accessToken",
   USER_LOGIN: "userLogin",
@@ -51,11 +54,13 @@ export const {
   getStore,
   setStoreJson,
   getStoreJson,
+  clearStore,
   USER_LOGIN,
   ACCESS_TOKEN,
 } = config;
 
 const DOMAIN = 'https://shop.cyberlearn.vn/api'
+const CYBER_SOFT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCAzMCIsIkhldEhhblN0cmluZyI6IjE3LzAyLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY3NjU5MjAwMDAwMCIsIm5iZiI6MTY0ODIyNzYwMCwiZXhwIjoxNjc2NzM5NjAwfQ.aK-3RvHXQyu6H2-FFiafeSKR4UMCcRmnuDbTT-XIcUU'
 
 export const axiosTimeout = axios.create({
   baseURL: DOMAIN,
@@ -66,15 +71,37 @@ export const axiosTimeout = axios.create({
 
 axiosTimeout.interceptors.request.use(
   (config) => {
-    // const token = getStore(ACCESS_TOKEN);
+    const token = getStoreJson(ACCESS_TOKEN);
     config.headers = {
       ...config.headers,
-      // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCAzMCIsIkhldEhhblN0cmluZyI6IjE3LzAyLzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY3NjU5MjAwMDAwMCIsIm5iZiI6MTY0ODIyNzYwMCwiZXhwIjoxNjc2NzM5NjAwfQ.aK-3RvHXQyu6H2-FFiafeSKR4UMCcRmnuDbTT-XIcUU`,
+      Authorization: `Bearer ${token}`,
     };
 
     return config;
   },
   (error) => {
     return Promise.reject(error);
+  }
+);
+
+axiosTimeout.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (err) => {
+    // const originalRequest = err.config;
+    if (err.response.status === 400 || err.response.status === 404) {
+      // history.push("/register");
+      return Promise.reject(err);
+    }
+    // console.log(err.response);
+    if (
+      err.response.status === 0 ||
+      err.response.status === 401 ||
+      err.response.status === 403
+    ) {
+      clearStore(ACCESS_TOKEN);
+      return Promise.reject(err);
+    }
   }
 );
