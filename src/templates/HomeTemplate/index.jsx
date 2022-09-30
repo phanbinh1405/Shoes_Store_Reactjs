@@ -9,10 +9,11 @@ export default function HomeTemplate() {
 	return (
 		<Fragment>
 			<Header />
-			<div className='container min-vh-50'>
-				<Outlet />
-				<ToastContainer  autoClose={1500}/>
+			<div className='container min-vh-100'>
+				
 
+				<Outlet />
+				<ToastContainer autoClose={1500} />
 			</div>
 			<Footer />
 		</Fragment>

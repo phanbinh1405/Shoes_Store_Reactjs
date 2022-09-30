@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { orderBy } from "lodash";
 import { toast } from "react-toastify";
 import { ACCESS_TOKEN, axiosTimeout, setStoreJson } from "../../utils/tools";
 
@@ -13,7 +14,7 @@ const initialState = {
 		error: "",
 	},
 	myProfile: {},
-	orderHistory: [],
+	ordersHistory: [],
 };
 
 const accountReducer = createSlice({
@@ -41,7 +42,7 @@ const accountReducer = createSlice({
 			state.signIn.loading = false;
 			state.signIn.error = "";
 			state.myProfile = data.payload.myProfile;
-			state.orderHistory = data.payload.orderHistory;
+			state.ordersHistory = data.payload.ordersHistory;
 		},
 		fetchProfileFailure: (state, data) => {
 			state.signIn.loading = false;
@@ -90,8 +91,9 @@ export const signIn = createAsyncThunk(
 
 			thunkAPI.dispatch(signInSuccess({ accessToken }));
 			cb(true);
-		} catch (err) {
-			console.log(err);
+		} catch (error) {
+			console.log(error)
+			toast(error.response.data.message, { type: "error" });
 		}
 	}
 );
@@ -104,7 +106,6 @@ export const fetchProfileAction = createAsyncThunk(
 
 			const data = await axiosTimeout.post("/Users/getProfile");
 			const result = data.data.content;
-
 			const myProfile = {
 				email: result?.email,
 				name: result?.name,
@@ -115,10 +116,10 @@ export const fetchProfileAction = createAsyncThunk(
 				deleted: result?.deleted,
 				avatar: result?.avatar,
 			};
+			
+			const ordersHistory = orderBy(result?.ordersHistory, ['id'], ['desc'])
 
-			const orderHistory = result?.orderHistory;
-
-			thunkAPI.dispatch(fetchProfileSuccess({ myProfile, orderHistory }));
+			thunkAPI.dispatch(fetchProfileSuccess({ myProfile, ordersHistory }));
 
 		} catch (err) {
 			console.log(err);
