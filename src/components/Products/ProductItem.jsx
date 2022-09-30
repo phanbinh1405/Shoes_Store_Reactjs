@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { likeProductApi } from "../../redux/reducers/productReducer";
+import { addCartAction } from "../../redux/reducers/cartReducer";
 function ProductItem({ product, accessToken, setShowModal }) {
 	const dispatch = useDispatch();
 
@@ -25,6 +26,7 @@ function ProductItem({ product, accessToken, setShowModal }) {
 	};
 
 
+
 	return (
 		<div className='col-12 col-sm-6 col-lg-4 d-flex justify-content-center'>
 			<div className='card d-flex align-items-center flex-column position-relative'>
@@ -40,9 +42,9 @@ function ProductItem({ product, accessToken, setShowModal }) {
 					</div>
 				</NavLink>
 				<div className='card-footer mt-auto d-flex align-items-strech w-100 p-0'>
-					<NavLink className='card-button' to='#' style={{ width: "50%" }}>
+					<button className='card-button border-0' onClick={() => dispatch(addCartAction(product))} style={{ width: "50%" }}>
 						Buy now
-					</NavLink>
+					</button>
 					<p className='m-0 text-center card-price' style={{ width: "50%" }}>
 						{product.price}
 					</p>

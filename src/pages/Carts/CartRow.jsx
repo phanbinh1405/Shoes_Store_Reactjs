@@ -5,7 +5,7 @@ import {
 	deleteProductAction,
 } from "../../redux/reducers/cartReducer";
 
-function CartRow({ item }) {
+function CartRow({ item, isHide }) {
 	const dispatch = useDispatch();
 
 	const changeQuantity = (productId, value) => {
@@ -19,10 +19,10 @@ function CartRow({ item }) {
 	const deleteProduct = (productId) => {
 		dispatch(deleteProductAction(productId));
 	};
-  
+
 	return (
 		<tr style={{ verticalAlign: "middle" }}>
-			<td>{item.id}</td>
+			{!isHide && <td>{item.id}</td>}
 			<td
 				style={{
 					width: 100,
@@ -40,18 +40,20 @@ function CartRow({ item }) {
 			<td>{item.name}</td>
 			<td>{item.price}</td>
 			<td>
-				<button
-					className='btn btn-success'
-					style={{
-						lineHeight: 1,
-						height: 20,
-						display: "inline-flex",
-						alignItems: "center",
-					}}
-					onClick={() => changeQuantity(item.id, 1)}
-				>
-					+
-				</button>
+				{!isHide && (
+					<button
+						className='btn btn-success'
+						style={{
+							lineHeight: 1,
+							height: 20,
+							display: "inline-flex",
+							alignItems: "center",
+						}}
+						onClick={() => changeQuantity(item.id, 1)}
+					>
+						+
+					</button>
+				)}
 
 				<div
 					style={{
@@ -62,18 +64,20 @@ function CartRow({ item }) {
 				>
 					{item.quantity}
 				</div>
-				<button
-					className='btn btn-danger'
-					style={{
-						lineHeight: 1,
-						height: 20,
-						display: "inline-flex",
-						alignItems: "center",
-					}}
-					onClick={() => changeQuantity(item.id, -1)}
-				>
-					-
-				</button>
+				{!isHide && (
+					<button
+						className='btn btn-danger'
+						style={{
+							lineHeight: 1,
+							height: 20,
+							display: "inline-flex",
+							alignItems: "center",
+						}}
+						onClick={() => changeQuantity(item.id, -1)}
+					>
+						-
+					</button>
+				)}
 			</td>
 			<td width='150px'>
 				{(item.price * item.quantity).toLocaleString("en-US", {
@@ -81,14 +85,16 @@ function CartRow({ item }) {
 					currency: "USD",
 				})}
 			</td>
-			<td style={{ width: 50 }}>
-				<button
-					className='btn btn-danger'
-					onClick={() => deleteProduct(item.id)}
-				>
-					Delete
-				</button>
-			</td>
+			{!isHide && (
+				<td style={{ width: 50 }}>
+					<button
+						className='btn btn-danger'
+						onClick={() => deleteProduct(item.id)}
+					>
+						Delete
+					</button>
+				</td>
+			)}
 		</tr>
 	);
 }

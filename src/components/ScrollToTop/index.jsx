@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { signInSuccess } from "../../redux/reducers/accountReducer";
+import { fetchProfileAction, signInSuccess } from "../../redux/reducers/accountReducer";
 import { ACCESS_TOKEN, getStoreJson } from "../../utils/tools";
 
 function ScrollToTop({ children }) {
@@ -15,6 +15,7 @@ function ScrollToTop({ children }) {
 
 	useEffect(() => {
 		if (accessToken) {
+			dispatch(fetchProfileAction())
 			dispatch(signInSuccess({ accessToken }));
 		}
 	});

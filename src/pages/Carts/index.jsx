@@ -1,10 +1,18 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { submitOrderAction } from "../../redux/reducers/cartReducer";
 
 import CartRow from "./CartRow";
 
 export default function Carts() {
 	const { cart } = useSelector((state) => state.cartReducer);
+	const { myProfile } = useSelector((state) => state.accountReducer);
+	const dispatch = useDispatch()
+	const {email} = myProfile
+	const handleSubmitOrder =(e) => {
+		e.preventDefault()
+		dispatch(submitOrderAction(cart, email))
+	}
 
 	const renderRowCart = () => {
 		return cart?.map((item) => {
@@ -49,7 +57,7 @@ export default function Carts() {
 				</table>
 			</div>
 			<div className='text-end mt-3'>
-				<button className='btn btn-primary'>Submit Order</button>
+				<button className='btn btn-primary' onClick={(e) => handleSubmitOrder(e)}>Submit Order</button>
 			</div>
 		</>
 	);

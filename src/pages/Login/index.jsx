@@ -19,7 +19,6 @@ export default function Login() {
 				signInFacebookAction({
 					values: accessToken,
 					cb: (success) => {
-						console.log(success);
 						if (success) {
 							navigate("/");
 						}
